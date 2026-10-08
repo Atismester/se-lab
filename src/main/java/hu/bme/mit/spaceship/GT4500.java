@@ -9,6 +9,7 @@ public class GT4500 implements SpaceShip {
   private TorpedoStore secondaryTorpedoStore;
 
   private boolean wasPrimaryFiredLast = false;
+    private static final int BURST_SIZE = 3;
 
   public GT4500() {
     this.primaryTorpedoStore = new TorpedoStore(10);
@@ -90,6 +91,15 @@ public class GT4500 implements SpaceShip {
 
         firingSuccess = primarySuccess || secondarySuccess;
         break;
+
+      case BURST: {
+        int primaryShots = Math.min(BURST_SIZE, primaryTorpedoStore.getTorpedoCount());
+        int secondaryShots = Math.min(BURST_SIZE, secondaryTorpedoStore.getTorpedoCount());
+        boolean primaryBurst = primaryShots > 0 && primaryTorpedoStore.fire(primaryShots);
+        boolean secondaryBurst = secondaryShots > 0 && secondaryTorpedoStore.fire(secondaryShots);
+        firingSuccess = primaryBurst || secondaryBurst;
+        break;
+      }
     }
 
     return firingSuccess;
